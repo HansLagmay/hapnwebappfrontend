@@ -205,6 +205,22 @@ export const Products = {
       c.onerror = ()=> rej(c.error)
     })
   })},
+  async byMerchant(merchantId: string){ return tx('products','readonly', async s => new Promise<Product[]>((res, rej)=>{
+    const idx = s.index('merchantId').openCursor(IDBKeyRange.only(merchantId))
+    const items: Product[] = []
+    idx.onsuccess = ()=> { const cur = idx.result; if(!cur) return res(items); items.push(cur.value as Product); cur.continue() }
+    idx.onerror = ()=> rej(idx.error)
+  }))},
+  async create(p: Omit<Product,'id'|'createdAt'>){
+    const item: Product = { ...p, id: crypto.randomUUID(), createdAt: Date.now() }
+    return tx('products','readwrite', async s => { await s.add(item); return item })
+  },
+  async update(p: Product){
+    return tx('products','readwrite', async s => { await s.put(p); return p })
+  },
+  async remove(id: string){
+    return tx('products','readwrite', async s => { await s.delete(id) })
+  }
 }
 
 export const Cart = {
@@ -251,5 +267,28 @@ export const Orders = {
       g.onsuccess = ()=> { const item = g.result as Order; item.status = status; s.put(item); res() }
       g.onerror = ()=> rej(g.error)
     }))
+  }
+}
+
+export const Merchants = {
+  async findByOwnerEmail(email: string){
+    const u = await Users.findByEmail(email)
+    if(!u) return undefined
+    const db = await openDB()
+    return new Promise<Merchant | undefined>((res, rej)=>{
+      const t = db.transaction('merchants','readonly'); const s = t.objectStore('merchants')
+      const all: Merchant[] = []
+      const c = s.openCursor()
+      c.onsuccess = ()=> { const cur = c.result; if(!cur) return res(all.find(m=> m.ownerUserId===u.id)); all.push(cur.value as Merchant); cur.continue() }
+      c.onerror = ()=> rej(c.error)
+    })
+  },
+  async ensureForEmail(email: string){
+    const u = await Users.findByEmail(email)
+    if(!u) throw new Error('user not found')
+    const found = await this.findByOwnerEmail(email)
+    if(found) return found
+    const m: Merchant = { id: crypto.randomUUID(), ownerUserId: u.id, businessName: email.split('@')[0]+"'s Shop", createdAt: Date.now() }
+    return tx('merchants','readwrite', async s => { await s.add(m); return m })
   }
 }

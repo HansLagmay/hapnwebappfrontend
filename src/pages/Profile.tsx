@@ -50,6 +50,7 @@ export default function Profile(){
   )
 }
 
+import { Link as RL } from 'react-router-dom'
 function RoleSection({me, onSwitch, onEnable}:{me: User, onSwitch: (r:any)=>void, onEnable: (r:any)=>void}){
   const roles = new Set(me.roles ?? [me.role])
   const active = me.activeRole ?? me.role
@@ -60,6 +61,7 @@ function RoleSection({me, onSwitch, onEnable}:{me: User, onSwitch: (r:any)=>void
         {Array.from(roles).map(r=> <button key={r} className="btn secondary" onClick={()=> onSwitch(r)}>{r}</button>)}
         {!roles.has('merchant') && <button className="btn" onClick={()=> onEnable('merchant')}>enable merchant</button>}
         {!roles.has('rider') && <button className="btn" onClick={()=> onEnable('rider')}>enable rider</button>}
+        {roles.has('merchant') && <RL to="/merchant/products" className="btn">manage products</RL>}
       </div>
     </div>
   )

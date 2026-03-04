@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { Cart as CartDB, Products, Orders } from '../data/db'
 import type { CartItem, Product } from '../data/db'
 import { applyVoucher, deliveryFee } from '../lib/pricing'
+import { useToast } from '../components/Toast'
 
 export default function Cart(){
   const [items,setItems] = useState<CartItem[]>([])
   const [map,setMap] = useState<Record<string,Product>>({})
   const [code,setCode] = useState('')
   const [distance,setDistance] = useState(4)
+  const { push } = useToast()
   const uid = localStorage.getItem('hapn.currentUser') ?? 'guest'
   useEffect(()=>{ (async()=>{
     const its = await CartDB.byUser(uid)
@@ -50,7 +52,7 @@ export default function Cart(){
         await Orders.create({ userId: uid, items: orderItems, subtotal, deliveryFee: dfee, discount: voucher.discount, total })
         await CartDB.clear(uid)
         setItems([])
-        alert('Order placed! Tracking will update in your profile.')
+        push('Order placed! Track it in your profile')
       }}>Check Out ({items.length})</button>
     </div>
   )

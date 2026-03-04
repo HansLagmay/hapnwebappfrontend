@@ -11,6 +11,7 @@ import Statistics from './pages/Statistics'
 import Profile from './pages/Profile'
 import Rider from './pages/Rider'
 import Shell from './components/Shell'
+import MerchantProducts from './pages/MerchantProducts'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/merchant/register" element={<MerchantRegister />} />
+        <Route path="/merchant/products" element={<MerchantProducts />} />
         <Route path="/merchant/stats" element={<Statistics />} />
         <Route path="/rider" element={<Rider />} />
         <Route path="/profile" element={<Profile />} />

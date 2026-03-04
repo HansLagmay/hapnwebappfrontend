@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Products, seedIfEmpty, Events } from '../data/db'
 import type { Product } from '../data/db'
 import { Link } from 'react-router-dom'
+import { useToast } from '../components/Toast'
 
 export default function Home(){
   const [products,setProducts] = useState<Product[]>([])
@@ -14,6 +15,7 @@ export default function Home(){
     setEvents(await Events.list())
   })() },[])
   const fProducts = useMemo(()=> products.filter(p=> p.title.toLowerCase().includes(query.toLowerCase())),[products,query])
+  const toast = useToast()
   return (
     <div className="container">
       <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
@@ -46,7 +48,7 @@ export default function Home(){
             <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
             <div style={{fontWeight:600}}>{p.title}</div>
             <div>₱{p.price}</div>
-            <button className="btn" onClick={()=> addToCart(p.id)}>add to cart</button>
+            <button className="btn" onClick={()=> addToCart(p.id, toast.push)}>add to cart</button>
           </div>
         ))}
       </div>
@@ -57,7 +59,7 @@ export default function Home(){
             <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
             <div style={{fontWeight:600}}>{p.title}</div>
             <div>₱{p.price}</div>
-            <button className="btn" onClick={()=> addToCart(p.id)}>add to cart</button>
+            <button className="btn" onClick={()=> addToCart(p.id, toast.push)}>add to cart</button>
           </div>
         ))}
       </div>
@@ -68,7 +70,7 @@ export default function Home(){
             <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
             <div style={{fontWeight:600}}>{p.title}</div>
             <div>₱{p.price}</div>
-            <button className="btn" onClick={()=> addToCart(p.id)}>add to cart</button>
+            <button className="btn" onClick={()=> addToCart(p.id, toast.push)}>add to cart</button>
           </div>
         ))}
       </div>
@@ -76,12 +78,12 @@ export default function Home(){
   )
 }
 
-async function addToCart(pid: string){
+async function addToCart(pid: string, notify?: (t:string)=>void){
   const email = localStorage.getItem('hapn.currentUser') ?? 'guest'
   // for simplicity, use email as user key; seed creates an admin if none registered
   // create a stable pseudo user id based on email
   const userId = email
   const { Cart } = await import('../data/db')
   await Cart.add(userId,pid,1)
-  alert('Added to cart')
+  notify ? notify('Added to cart') : alert('Added to cart')
 }
