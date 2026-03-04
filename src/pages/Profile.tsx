@@ -21,6 +21,7 @@ export default function Profile(){
   })() },[user])
   return (
     <div className="container">
+      <button className="btn secondary" onClick={()=> history.back()}>← back</button>
       <div className="card" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div>
           <div style={{fontWeight:700}}>{user}</div>
@@ -29,6 +30,9 @@ export default function Profile(){
         <Link to="/merchant/register" className="btn">start your business</Link>
       </div>
       {me && <RoleSection me={me} onSwitch={async(r)=> { await Users.setActiveRole(user,r); localStorage.setItem('hapn.role', r); location.reload() }} onEnable={async(r)=> { await Users.addRole(user,r); const u = await Users.findByEmail(user); setMe(u ?? null) }} />}
+      <div style={{margin:'12px 0'}}>
+        <button className="btn secondary" onClick={()=> { localStorage.removeItem('hapn.currentUser'); sessionStorage.removeItem('hapn.currentUser'); location.href='/welcome' }}>log out</button>
+      </div>
       <h3 style={{marginTop:16}}>Your Orders</h3>
       <div className="stack">
         {orders.map(o=>(

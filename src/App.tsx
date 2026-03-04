@@ -10,6 +10,7 @@ import MerchantRegister from './pages/MerchantRegister'
 import Statistics from './pages/Statistics'
 import Profile from './pages/Profile'
 import Rider from './pages/Rider'
+import Shell from './components/Shell'
 
 export default function App() {
   return (
@@ -18,13 +19,15 @@ export default function App() {
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/calendar" element={<Calendar />} />
-      <Route path="/merchant/register" element={<MerchantRegister />} />
-      <Route path="/merchant/stats" element={<Statistics />} />
-      <Route path="/rider" element={<Rider />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route element={<Shell />}>
+        <Route path="/home" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/merchant/register" element={<MerchantRegister />} />
+        <Route path="/merchant/stats" element={<Statistics />} />
+        <Route path="/rider" element={<Rider />} />
+        <Route path="/profile" element={<Profile />} />
+      </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

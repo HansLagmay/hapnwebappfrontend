@@ -21,6 +21,7 @@ export default function Cart(){
   const total = Math.max(0, subtotal - voucher.discount) + dfee
   return (
     <div className="container">
+      <button className="btn secondary" onClick={()=> history.back()}>← back</button>
       <h2>Cart</h2>
       <div className="stack">
         {items.map(i=>(

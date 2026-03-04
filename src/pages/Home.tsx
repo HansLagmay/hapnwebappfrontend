@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Products, seedIfEmpty, Events } from '../data/db'
 import type { Product } from '../data/db'
 import { Link } from 'react-router-dom'
@@ -7,11 +7,13 @@ export default function Home(){
   const [products,setProducts] = useState<Product[]>([])
   const [events,setEvents] = useState<any[]>([])
   const role = (localStorage.getItem('hapn.role') ?? 'consumer') as string
+  const [query,setQuery] = useState('')
   useEffect(()=>{ (async()=>{
     await seedIfEmpty()
     setProducts(await Products.list())
     setEvents(await Events.list())
   })() },[])
+  const fProducts = useMemo(()=> products.filter(p=> p.title.toLowerCase().includes(query.toLowerCase())),[products,query])
   return (
     <div className="container">
       <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
@@ -25,6 +27,9 @@ export default function Home(){
           <Link to="/cart">🛒</Link>
         </div>
       </header>
+      <div className="card" style={{marginBottom:12}}>
+        <input className="input" placeholder="Search products" value={query} onChange={e=> setQuery(e.target.value)} />
+      </div>
       <section className="card" style={{marginBottom:16}}>
         <h3 style={{marginTop:0}}>Upcoming Events</h3>
         <div className="grid">
@@ -36,8 +41,9 @@ export default function Home(){
       </section>
       <h3>Food and Beverage</h3>
       <div className="grid">
-        {products.filter(p=>p.category==='Food & Beverage').map(p=>(
+        {fProducts.filter(p=>p.category==='Food & Beverage').map(p=>(
           <div key={p.id} className="card">
+            <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
             <div style={{fontWeight:600}}>{p.title}</div>
             <div>₱{p.price}</div>
             <button className="btn" onClick={()=> addToCart(p.id)}>add to cart</button>
@@ -46,8 +52,9 @@ export default function Home(){
       </div>
       <h3>Clothing and Apparel</h3>
       <div className="grid">
-        {products.filter(p=>p.category==='Clothing & Apparel').map(p=>(
+        {fProducts.filter(p=>p.category==='Clothing & Apparel').map(p=>(
           <div key={p.id} className="card">
+            <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
             <div style={{fontWeight:600}}>{p.title}</div>
             <div>₱{p.price}</div>
             <button className="btn" onClick={()=> addToCart(p.id)}>add to cart</button>
@@ -56,8 +63,9 @@ export default function Home(){
       </div>
       <h3>Stationery</h3>
       <div className="grid">
-        {products.filter(p=>p.category==='Stationery').map(p=>(
+        {fProducts.filter(p=>p.category==='Stationery').map(p=>(
           <div key={p.id} className="card">
+            <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
             <div style={{fontWeight:600}}>{p.title}</div>
             <div>₱{p.price}</div>
             <button className="btn" onClick={()=> addToCart(p.id)}>add to cart</button>

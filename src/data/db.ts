@@ -1,6 +1,6 @@
 // Simple IndexedDB wrapper without external deps
 const DB_NAME = 'hapn-db'
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 export type UserRole = 'consumer' | 'merchant' | 'rider' | 'admin'
 export interface User {
@@ -71,6 +71,13 @@ function openDB(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains('users')) {
         const s = db.createObjectStore('users', { keyPath: 'id' })
         s.createIndex('email', 'email', { unique: true })
+        s.createIndex('phone', 'phone', { unique: false })
+      }
+      else {
+        const s = req.transaction!.objectStore('users')
+        if (!Array.from(s.indexNames).includes('phone')) {
+          s.createIndex('phone', 'phone', { unique: false })
+        }
       }
       if (!db.objectStoreNames.contains('products')) {
         const s = db.createObjectStore('products', { keyPath: 'id' })
@@ -155,6 +162,14 @@ export const Users = {
     const db = await openDB()
     return new Promise<User | undefined>((res, rej)=>{
       const idx = db.transaction('users','readonly').objectStore('users').index('email').get(email)
+      idx.onsuccess = ()=> res(idx.result as User | undefined)
+      idx.onerror = ()=> rej(idx.error)
+    })
+  },
+  async findByPhone(phone: string){
+    const db = await openDB()
+    return new Promise<User | undefined>((res, rej)=>{
+      const idx = db.transaction('users','readonly').objectStore('users').index('phone').get(phone)
       idx.onsuccess = ()=> res(idx.result as User | undefined)
       idx.onerror = ()=> rej(idx.error)
     })

@@ -7,6 +7,7 @@ export default function Calendar(){
   useEffect(()=>{ (async()=> setEvents(await Events.list()))() },[])
   return (
     <div className="container">
+      <button className="btn secondary" onClick={()=> history.back()}>← back</button>
       <h2>Events Calendar</h2>
       <div className="stack">
         {events.map(e=>(

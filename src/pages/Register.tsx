@@ -8,16 +8,14 @@ export default function Register(){
   const [email,setEmail] = useState('')
   const [phone,setPhone] = useState('')
   const [password,setPassword] = useState('')
-  const [roles,setRoles] = useState<Record<UserRole,boolean>>({consumer:true, merchant:false, rider:false, admin:false})
+  const [role,setRole] = useState<UserRole>('consumer')
   const [err,setErr] = useState('')
   const onSubmit = async (e: React.FormEvent)=> {
     e.preventDefault()
     try{
       const exists = await Users.findByEmail(email)
       if(exists){ setErr('email already registered'); return }
-      const picked = (Object.keys(roles) as UserRole[]).filter(r=> roles[r])
-      const role = picked.includes('consumer')? 'consumer' : picked[0]
-      await Users.create({ email, phone, password, role, roles: picked, activeRole: role })
+      await Users.create({ email, phone, password, role, roles: [role], activeRole: role })
       localStorage.setItem('hapn.currentUser', email)
       localStorage.setItem('hapn.role', role)
       nav('/home')
@@ -26,16 +24,24 @@ export default function Register(){
   return (
     <div className="container">
       <div className="card" style={{maxWidth:420, margin:'40px auto'}}>
+        <button className="btn secondary" onClick={()=> nav(-1)}>← back</button>
         <h2 style={{color:'var(--color-red)', textAlign:'center'}}>Register</h2>
         <form className="stack" onSubmit={onSubmit}>
-          <input className="input" placeholder="email address" value={email} onChange={e=>setEmail(e.target.value)} required />
-          <input className="input" placeholder="phone number" value={phone} onChange={e=>setPhone(e.target.value)} />
-          <input className="input" type="password" placeholder="password" value={password} onChange={e=>setPassword(e.target.value)} required />
-          <div className="card" style={{display:'flex', gap:8, alignItems:'center'}}>
-            <label><input type="checkbox" checked={roles.consumer} onChange={e=> setRoles({...roles, consumer:e.target.checked})}/> consumer</label>
-            <label><input type="checkbox" checked={roles.merchant} onChange={e=> setRoles({...roles, merchant:e.target.checked})}/> merchant</label>
-            <label><input type="checkbox" checked={roles.rider} onChange={e=> setRoles({...roles, rider:e.target.checked})}/> rider</label>
+          <input className="input" placeholder="email address (e.g., you@example.com)" value={email} onChange={e=>setEmail(e.target.value)} required />
+          <input className="input" placeholder="phone number (optional)" value={phone} onChange={e=>setPhone(e.target.value)} />
+          <input className="input" type="password" placeholder="password (min 6 chars)" value={password} onChange={e=>setPassword(e.target.value)} required />
+          <div className="card" style={{display:'flex', gap:12, alignItems:'center', justifyContent:'space-between'}}>
+            <label style={{display:'flex',alignItems:'center',gap:6}}>
+              <input type="radio" name="role" checked={role==='consumer'} onChange={()=> setRole('consumer')} /> consumer
+            </label>
+            <label style={{display:'flex',alignItems:'center',gap:6}}>
+              <input type="radio" name="role" checked={role==='merchant'} onChange={()=> setRole('merchant')} /> merchant
+            </label>
+            <label style={{display:'flex',alignItems:'center',gap:6}}>
+              <input type="radio" name="role" checked={role==='rider'} onChange={()=> setRole('rider')} /> rider
+            </label>
           </div>
+          <div style={{fontSize:12, color:'#555'}}>You can enable other roles later from your Profile.</div>
           {err && <div style={{color:'crimson'}}>{err}</div>}
           <button className="btn" type="submit">register</button>
         </form>
