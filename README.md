@@ -31,8 +31,12 @@ You can also register new accounts and select roles during sign‑up.
 - Splash and Welcome with CTA buttons (register, log in, guest)
 - Auth (register/login) with single account, multi‑role (consumer/merchant/rider)
 - Role switching in Profile with “current mode” indicator
+- App shell:
+  - Sticky header with brand, role badge, and “Deliver to” address control
+  - Footer and mobile bottom navigation (Home, Calendar, Cart, Profile)
 - Home feed:
   - Upcoming Events section
+  - Search bar with live filtering
   - Category sections: Food & Beverage, Clothing & Apparel, Stationery
 - Cart & Checkout:
   - Add to cart, totals, voucher codes (`HAPN50`, `WELCOME10`)
@@ -40,10 +44,12 @@ You can also register new accounts and select roles during sign‑up.
   - Simulated checkout creates an order and clears cart
 - Orders:
   - Profile shows order history and status progression (placed → preparing → enroute → delivered)
-- Merchant console (MVP scaffolds):
+- Merchant console (client‑only MVP):
   - Business Registration form
+  - Manage Products (create with image preview, delete)
   - Statistics page with items and totals
 - Rider console (MVP scaffold): tasks placeholder, ready for assignments
+- Toast notifications for add‑to‑cart and checkout confirmations
 
 ## Architecture (No Server)
 
@@ -72,13 +78,24 @@ Seeding runs on first load to populate demo accounts, products, and events.
 ```
 src/
   components/Logo.tsx
+  components/Shell.tsx         # Sticky header, footer, bottom nav
+  components/Toast.tsx         # App-wide toast notifications
   data/db.ts           # IndexedDB wrapper (users, roles, products, cart, orders, events)
   lib/pricing.ts       # vouchers and delivery fee helpers
   pages/               # Splash, Welcome, Login, Register, Home, Cart, Calendar, Profile,
-                       # MerchantRegister, Statistics, Rider
+                       # MerchantRegister, MerchantProducts, Statistics, Rider
   styles/theme.css
   App.tsx, main.tsx
 ```
+
+## Changelog
+
+- 2026‑03‑05
+  - Add app shell (sticky header/footer, bottom nav, editable delivery address)
+  - Improve Login/Register UX (demo chips, remember‑me, show/hide password, validation)
+  - Add Search on Home and improve product cards
+  - Introduce Toast notifications
+  - Add Merchant Products page (create with image preview, delete)
 
 ## Roadmap
 
