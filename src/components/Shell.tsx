@@ -1,9 +1,11 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import LoginModal from './LoginModal'
 
 export default function Shell(){
   const [addr,setAddr] = useState(localStorage.getItem('hapn.addr') || 'Davao City')
   const [edit,setEdit] = useState(false)
+  const [loginOpen,setLoginOpen] = useState(false)
   const loc = useLocation()
   useEffect(()=>{ setEdit(false) },[loc.pathname])
   const role = localStorage.getItem('hapn.role') || 'consumer'
@@ -32,7 +34,7 @@ export default function Shell(){
             </nav>
           ) : (
             <div style={{display:'flex', gap:8}}>
-              <Link to="/login" className="btn secondary">log in</Link>
+              <button className="btn secondary" onClick={()=> setLoginOpen(true)}>log in</button>
               <Link to="/register" className="btn">create account</Link>
             </div>
           )}
@@ -58,6 +60,7 @@ export default function Shell(){
         <Link to="/cart">🛒</Link>
         <Link to="/profile">👤</Link>
       </div>
+      <LoginModal open={loginOpen} onClose={()=> setLoginOpen(false)} />
     </div>
   )
 }

@@ -37,9 +37,16 @@ export default function Landing(){
         <input className="input" placeholder="Search products and services" value={query} onChange={e=> setQuery(e.target.value)} />
       </div>
       <section style={{marginTop:12}}>
-        <h3 style={{marginTop:0}}>Browse by category</h3>
-        <div style={{display:'flex', gap:8, overflowX:'auto', paddingBottom:8}}>
-          {cats.map(c=> <a key={c} href={`#cat-${slug(c)}`} className="pill">{icon(c)} {c}</a>)}
+        <h3 style={{marginTop:0}}>Cuisines & Services</h3>
+        <div style={{display:'flex', gap:12, overflowX:'auto', padding:'4px 0'}}>
+          {chips().map(ch=>(
+            <div key={ch.label} onClick={()=> setQuery(ch.label)} style={{cursor:'pointer', textAlign:'center'}}>
+              <div style={{width:72,height:72, borderRadius:16, overflow:'hidden', background:'#fff', boxShadow:'var(--shadow)', display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <div className="placeholder" style={{height:72,width:72}}/>
+              </div>
+              <div style={{fontSize:13, marginTop:6, color:'var(--color-red)'}}>{ch.label}</div>
+            </div>
+          ))}
         </div>
       </section>
       <section className="card" style={{marginTop:12}}>
@@ -84,11 +91,8 @@ export default function Landing(){
 
 function slug(s: string){ return s.toLowerCase().replace(/\s+/g,'-') }
 
-function icon(c:string){
-  const k = c.toLowerCase()
-  if(k.includes('food')) return '🍜'
-  if(k.includes('clothing')) return '👕'
-  if(k.includes('stationery')) return '✏️'
-  if(k.includes('service')) return '🧰'
-  return '🛍️'
+function chips(){ 
+  return [
+    { label:'Pizza' },{ label:'Chicken' },{ label:'Cakes' },{ label:'Milk Tea' },{ label:'Coffee' },{ label:'Burgers' },{ label:'Filipino' },{ label:'Laundry' },{ label:'Phone Repair' }
+  ] 
 }
