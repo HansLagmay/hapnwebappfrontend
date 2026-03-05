@@ -7,6 +7,7 @@ export default function Shell(){
   const loc = useLocation()
   useEffect(()=>{ setEdit(false) },[loc.pathname])
   const role = localStorage.getItem('hapn.role') || 'consumer'
+  const user = localStorage.getItem('hapn.currentUser') || sessionStorage.getItem('hapn.currentUser') || ''
   return (
     <div>
       <header style={{position:'sticky', top:0, zIndex:10, background:'var(--color-bg)', borderBottom:'1px solid #eee'}}>
@@ -22,12 +23,19 @@ export default function Shell(){
               </div>
             )}
           </div>
-          <nav style={{display:'flex', gap:12}}>
-            <span style={{fontSize:12,color:'var(--color-dark-crimson)',alignSelf:'center'}}>{role}</span>
-            <Link to="/calendar">📅</Link>
-            <Link to="/profile">👤</Link>
-            <Link to="/cart">🛒</Link>
-          </nav>
+          {user ? (
+            <nav style={{display:'flex', gap:12}}>
+              <span style={{fontSize:12,color:'var(--color-dark-crimson)',alignSelf:'center'}}>{role}</span>
+              <Link to="/calendar">📅</Link>
+              <Link to="/profile">👤</Link>
+              <Link to="/cart">🛒</Link>
+            </nav>
+          ) : (
+            <div style={{display:'flex', gap:8}}>
+              <Link to="/login" className="btn secondary">log in</Link>
+              <Link to="/register" className="btn">create account</Link>
+            </div>
+          )}
         </div>
       </header>
       <main>
@@ -44,7 +52,8 @@ export default function Shell(){
         </div>
       </footer>
       <div style={{position:'fixed', bottom:0, left:0, right:0, display:'flex', justifyContent:'space-around', padding:'10px 0', background:'rgba(255,255,255,0.95)', borderTop:'1px solid #eee'}}>
-        <Link to="/home">🏠</Link>
+        <Link to="/">🏠</Link>
+        <Link to="/home">🛍️</Link>
         <Link to="/calendar">📅</Link>
         <Link to="/cart">🛒</Link>
         <Link to="/profile">👤</Link>

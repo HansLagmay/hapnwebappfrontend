@@ -134,13 +134,13 @@ export const seedIfEmpty = async () => {
     const merchId = crypto.randomUUID()
     const merchant: Merchant = { id: merchId, ownerUserId: admin.id, businessName: 'Davao Finds', createdAt: Date.now() }
     t.objectStore('merchants').add(merchant)
-    const categories = ['Food & Beverage','Clothing & Apparel','Stationery']
-    for (let i=0;i<12;i++){
+    const categories = ['Food & Beverage','Clothing & Apparel','Stationery','Services']
+    for (let i=0;i<16;i++){
       const p: Product = {
         id: crypto.randomUUID(),
         merchantId: merchId,
-        title: ['Iced Coffee','Siomai','Cookie','Keychain','Skirt','Donut'][i%6] + ' ' + (i+1),
-        price: [120,150,80,60,350,50][i%6],
+        title: ['Iced Coffee','Siomai','Cookie','Keychain','Skirt','Donut','Laundry Service','Phone Repair'][i%8] + ' ' + (i+1),
+        price: [120,150,80,60,350,50,120,500][i%8],
         category: categories[i%categories.length],
         createdAt: Date.now()
       }
