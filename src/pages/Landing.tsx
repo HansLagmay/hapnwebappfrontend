@@ -15,9 +15,10 @@ export default function Landing(){
   })() },[])
   const cats = useMemo(()=> Array.from(new Set(products.map(p=> p.category))), [products])
   const f = useMemo(()=> products.filter(p=> p.title.toLowerCase().includes(query.toLowerCase())),[products, query])
+  const loading = products.length===0 && events.length===0
   return (
     <div className="container">
-      <section className="card" style={{display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:12, alignItems:'center', background:'linear-gradient(90deg,#fff,#fee)', marginTop:12}}>
+      <section className="hero card" style={{marginTop:12}}>
         <div>
           <h1 style={{margin:'8px 0', color:'var(--color-red)'}}>go on, make it hap’n!</h1>
           <div style={{margin:'8px 0 16px 0'}}>discover local goods, great eats, and services around you — all in one place.</div>
@@ -27,24 +28,28 @@ export default function Landing(){
             <Link to="/rider" className="btn secondary">ride with hap’n</Link>
           </div>
         </div>
-        <div style={{height:160, borderRadius:12, background:'radial-gradient(circle at 30% 30%, #ffd6d6, #fff)'}}/>
+        <div className="placeholder-lg" />
       </section>
+      <div className="banner" style={{marginTop:12}}>
+        free delivery on your first order in davao city. terms apply.
+      </div>
       <div className="card" style={{marginTop:12}}>
         <input className="input" placeholder="Search products and services" value={query} onChange={e=> setQuery(e.target.value)} />
       </div>
       <section style={{marginTop:12}}>
         <h3 style={{marginTop:0}}>Browse by category</h3>
         <div style={{display:'flex', gap:8, overflowX:'auto', paddingBottom:8}}>
-          {cats.map(c=> <a key={c} href={`#cat-${slug(c)}`} className="btn secondary">{c}</a>)}
+          {cats.map(c=> <a key={c} href={`#cat-${slug(c)}`} className="pill">{icon(c)} {c}</a>)}
         </div>
       </section>
       <section className="card" style={{marginTop:12}}>
         <h3 style={{marginTop:0}}>Happenings near you</h3>
         <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:12}}>
-          {events.map(e=>(
+          {loading ? Array.from({length:3}).map((_,i)=><div key={i} className="skeleton" style={{height:96}} />) :
+            events.map(e=>(
             <div key={e.id} className="card">
-              <div style={{fontWeight:600}}>{e.title}</div>
-              <div>{e.startsAt} – {e.endsAt}</div>
+              <div className="card-title">{e.title}</div>
+              <div className="card-sub">{e.startsAt} – {e.endsAt}</div>
             </div>
           ))}
         </div>
@@ -53,15 +58,17 @@ export default function Landing(){
         <section key={c} id={`cat-${slug(c)}`} style={{marginTop:12}}>
           <h3 style={{marginTop:0}}>{c}</h3>
           <div className="grid">
-            {f.filter(p=> p.category===c).slice(0,8).map(p=>(
-              <div className="card" key={p.id}>
-                <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
-                <div style={{fontWeight:600}}>{p.title}</div>
-                <div>₱{p.price}</div>
-                <button className="btn" onClick={()=> nav('/home')}>view</button>
-              </div>
-            ))}
-            {f.filter(p=> p.category===c).length===0 && <div className="card">No items in this category</div>}
+            {loading ? Array.from({length:6}).map((_,i)=><div key={i} className="skeleton" style={{height:140}}/>) :
+              f.filter(p=> p.category===c).slice(0,8).map(p=>(
+                <div className="card" key={p.id}>
+                  <div className="placeholder" style={{marginBottom:8}} />
+                  <div className="card-title">{p.title}</div>
+                  <div className="card-sub">₱{p.price}</div>
+                  <button className="btn" onClick={()=> nav('/home')}>view</button>
+                </div>
+              ))
+            }
+            {!loading && f.filter(p=> p.category===c).length===0 && <div className="card">No items in this category</div>}
           </div>
         </section>
       ))}
@@ -76,3 +83,12 @@ export default function Landing(){
 }
 
 function slug(s: string){ return s.toLowerCase().replace(/\s+/g,'-') }
+
+function icon(c:string){
+  const k = c.toLowerCase()
+  if(k.includes('food')) return '🍜'
+  if(k.includes('clothing')) return '👕'
+  if(k.includes('stationery')) return '✏️'
+  if(k.includes('service')) return '🧰'
+  return '🛍️'
+}

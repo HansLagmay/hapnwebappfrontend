@@ -45,9 +45,9 @@ export default function Home(){
       <div className="grid">
         {fProducts.filter(p=>p.category==='Food & Beverage').map(p=>(
           <div key={p.id} className="card">
-            <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
-            <div style={{fontWeight:600}}>{p.title}</div>
-            <div>₱{p.price}</div>
+            <div className="placeholder" style={{marginBottom:8}} />
+            <div className="card-title">{p.title}</div>
+            <div className="card-sub">₱{p.price} • ★★★★☆</div>
             <button className="btn" onClick={()=> addToCart(p.id, toast.push)}>add to cart</button>
           </div>
         ))}
@@ -56,9 +56,9 @@ export default function Home(){
       <div className="grid">
         {fProducts.filter(p=>p.category==='Clothing & Apparel').map(p=>(
           <div key={p.id} className="card">
-            <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
-            <div style={{fontWeight:600}}>{p.title}</div>
-            <div>₱{p.price}</div>
+            <div className="placeholder" style={{marginBottom:8}} />
+            <div className="card-title">{p.title}</div>
+            <div className="card-sub">₱{p.price} • ★★★★☆</div>
             <button className="btn" onClick={()=> addToCart(p.id, toast.push)}>add to cart</button>
           </div>
         ))}
@@ -67,9 +67,9 @@ export default function Home(){
       <div className="grid">
         {fProducts.filter(p=>p.category==='Stationery').map(p=>(
           <div key={p.id} className="card">
-            <div style={{height:80, background:'linear-gradient(180deg,#fff,#fee)', borderRadius:8, marginBottom:8}} />
-            <div style={{fontWeight:600}}>{p.title}</div>
-            <div>₱{p.price}</div>
+            <div className="placeholder" style={{marginBottom:8}} />
+            <div className="card-title">{p.title}</div>
+            <div className="card-sub">₱{p.price} • ★★★★☆</div>
             <button className="btn" onClick={()=> addToCart(p.id, toast.push)}>add to cart</button>
           </div>
         ))}
