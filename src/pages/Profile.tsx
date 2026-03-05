@@ -29,9 +29,9 @@ export default function Profile(){
         </div>
         <Link to="/merchant/register" className="btn">start your business</Link>
       </div>
-      {me && <RoleSection me={me} onSwitch={async(r)=> { await Users.setActiveRole(user,r); localStorage.setItem('hapn.role', r); location.reload() }} onEnable={async(r)=> { await Users.addRole(user,r); const u = await Users.findByEmail(user); setMe(u ?? null) }} />}
+      {me && <RoleSection me={me} onEnable={async(r)=> { await Users.addRole(user,r); const u = await Users.findByEmail(user); setMe(u ?? null) }} />}
       <div style={{margin:'12px 0'}}>
-        <button className="btn secondary" onClick={()=> { localStorage.removeItem('hapn.currentUser'); sessionStorage.removeItem('hapn.currentUser'); location.href='/welcome' }}>log out</button>
+        <button className="btn secondary" onClick={()=> { localStorage.removeItem('hapn.currentUser'); sessionStorage.removeItem('hapn.currentUser'); location.href='/' }}>log out</button>
       </div>
       <h3 style={{marginTop:16}}>Your Orders</h3>
       <div className="stack">
@@ -51,17 +51,17 @@ export default function Profile(){
 }
 
 import { Link as RL } from 'react-router-dom'
-function RoleSection({me, onSwitch, onEnable}:{me: User, onSwitch: (r:any)=>void, onEnable: (r:any)=>void}){
+function RoleSection({me, onEnable}:{me: User, onEnable: (r:any)=>void}){
   const roles = new Set(me.roles ?? [me.role])
-  const active = me.activeRole ?? me.role
   return (
     <div className="card" style={{marginTop:12}}>
-      <div style={{marginBottom:8,fontWeight:700}}>Current mode: {active}</div>
+      <div style={{marginBottom:8,fontWeight:700}}>My Portals</div>
       <div style={{display:'flex', gap:8, flexWrap:'wrap'}}>
-        {Array.from(roles).map(r=> <button key={r} className="btn secondary" onClick={()=> onSwitch(r)}>{r}</button>)}
-        {!roles.has('merchant') && <button className="btn" onClick={()=> onEnable('merchant')}>enable merchant</button>}
-        {!roles.has('rider') && <button className="btn" onClick={()=> onEnable('rider')}>enable rider</button>}
-        {roles.has('merchant') && <RL to="/merchant/products" className="btn">manage products</RL>}
+        {roles.has('merchant') && <RL to="/merchant/dashboard" className="btn">Access Merchant Portal</RL>}
+        {roles.has('rider') && <RL to="/rider/dashboard" className="btn">Access Rider Portal</RL>}
+        
+        {!roles.has('merchant') && <button className="btn secondary" onClick={()=> onEnable('merchant')}>Enable Merchant Account</button>}
+        {!roles.has('rider') && <button className="btn secondary" onClick={()=> onEnable('rider')}>Enable Rider Account</button>}
       </div>
     </div>
   )
